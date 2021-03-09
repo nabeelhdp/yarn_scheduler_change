@@ -87,6 +87,14 @@ def test_socket(socket_host,socket_port,service_name):
     finally:
       s.close()
 
+def set_ssl():
+
+    # BAD CODE : Ignores SSL - equivalent to cancelling cert prompt.
+    context = ssl.create_default_context()
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE
+    return context
+  
 # Submit new Capacity Scheduler config to from Ambari server
 def submit_scheduler_config(scheduler_config,config_dict):
     ambari_server_host = str(config_dict['ambari_server_host'])
@@ -110,8 +118,10 @@ def submit_scheduler_config(scheduler_config,config_dict):
     req.add_header('Content-Type','application/json')
     req.add_header('Accept','application/json')
     req.add_header('Authorization', auth_encoded)
+    
+    httpHandler = urllib2.HTTPSHandler(context=set_ssl())
 
-    httpHandler = urllib2.HTTPHandler()
+    # httpHandler = urllib2.HTTPHandler()
     httpHandler.set_http_debuglevel(1)
     opener = urllib2.build_opener(httpHandler)
 
