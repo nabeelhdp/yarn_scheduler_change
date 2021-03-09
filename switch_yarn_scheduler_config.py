@@ -7,6 +7,7 @@ import urllib2
 from urllib2 import URLError
 import socket
 import re
+import ssl
 import base64
 import json
 import time
